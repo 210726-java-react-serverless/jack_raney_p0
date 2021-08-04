@@ -34,9 +34,19 @@ public class DashPage extends Page {
 
     private void renderFaculty(Faculty fac) {
         System.out.println("You're at the Faculty dashboard");
+        /*
+        1) See/Modify/Delete Current Classes
+        2) Create New Class
+        4) Logout
+         */
     }
 
     private void renderStudent(Student stu) {
         System.out.println("You're at the Student dashboard");
+        /*
+        1) See/Unenroll Current Classes
+        2) Enroll in New Class
+        3) Logout
+         */
     }
 }

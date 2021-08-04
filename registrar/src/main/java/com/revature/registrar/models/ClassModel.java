@@ -4,18 +4,27 @@ package com.revature.registrar.models;
 import com.revature.registrar.exceptions.CapacityReachedException;
 import com.revature.registrar.exceptions.InvalidUserTypesException;
 
+import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Set;
 
 public class ClassModel {
     private final int id;
     private final String name;
     private int capacity;
+    private Calendar openWindow;
+    private Calendar closeWindow;
     private Set<Student> students;
     private Set<Faculty> faculty; //Could have multiple faculty members per class
 
-    public ClassModel(String name) {
+    public ClassModel(String name, int capacity, Calendar open, Calendar close, Set<Faculty> faculty) {
         this.name = name;
         this.id = name.hashCode();
+        this.capacity = capacity;
+        this.openWindow = open;
+        this.closeWindow = close;
+        this.students = new HashSet<>();
+        this.faculty = faculty;
     }
 
     public int getCapacity() {
@@ -40,6 +49,22 @@ public class ClassModel {
 
     public Set<Faculty> getFaculty() {
         return faculty;
+    }
+
+    public Calendar getOpenWindow() {
+        return openWindow;
+    }
+
+    public void setOpenWindow(Calendar openWindow) {
+        this.openWindow = openWindow;
+    }
+
+    public Calendar getCloseWindow() {
+        return closeWindow;
+    }
+
+    public void setCloseWindow(Calendar closeWindow) {
+        this.closeWindow = closeWindow;
     }
 
     public void addUser(User user) {
