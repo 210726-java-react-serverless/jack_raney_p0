@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Faculty extends User{
-    Set<ClassModel> classes = new HashSet<>(); //contains ids of registered classes OR should it store actual objects?
+    Set<ClassModel> classes = new HashSet<>(); //contains ids of taught classes OR should it store actual objects?
 
     public Faculty(String firstName, String lastName, String email, String username, String password) {
         super(firstName, lastName, email, username, password, true);

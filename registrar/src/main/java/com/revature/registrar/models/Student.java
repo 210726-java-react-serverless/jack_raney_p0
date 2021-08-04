@@ -8,7 +8,7 @@ public class Student extends User{
     Set<ClassModel> classes = new HashSet<>(); //contains ids of registered classes OR should it store actual objects?
 
     public Student(String firstName, String lastName, String email, String username, String password) {
-        super(firstName, lastName, email, username, password, true);
+        super(firstName, lastName, email, username, password, false);
     }
 
     public Set<ClassModel> getClasses() {
