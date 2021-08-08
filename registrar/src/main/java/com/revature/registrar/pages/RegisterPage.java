@@ -66,7 +66,7 @@ public class RegisterPage extends Page {
         try {
             userService.register(newUser);
             router.switchPage("/dash");
-            this.state.setCurrUser(newUser);
+            this.userService.setCurrUser(newUser);
             //logger.info("New user created!\n" + newUser.toString());
         } catch(Exception e) {
             //logger.error("Invalid credentials");

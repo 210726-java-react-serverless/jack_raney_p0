@@ -30,14 +30,7 @@ public class AppState {
         router.addPage(new RegisterPage(consoleReader, router, userService, this));
         router.addPage(new LoginPage(consoleReader, router, userService, this));
         router.addPage(new DashPage(consoleReader, router, userService, this));
-    }
-
-    public User getCurrUser() {
-        return currUser;
-    }
-
-    public void setCurrUser(User currUser) {
-        this.currUser = currUser;
+        router.addPage(new MyClassesPage(consoleReader, router, userService, this));
     }
 
     public void startup() {

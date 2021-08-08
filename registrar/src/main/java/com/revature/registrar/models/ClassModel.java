@@ -7,7 +7,9 @@ import com.revature.registrar.exceptions.InvalidUserTypesException;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ClassModel {
     private final int id;
     private final String name;

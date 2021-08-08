@@ -1,15 +1,20 @@
 package com.revature.registrar.models;
-
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
-    private final int id;
+    private int id;
     private String firstName;
     private String lastName;
     private String email;
-    private final String username; //username cannot be changed (no setter)
+    private String username;
     private String password;
     private boolean isFaculty;
+
+    public User() {
+        super();
+    }
 
     public User(String firstName, String lastName, String email, String username, String password, boolean isFaculty) {
         this.firstName = firstName;

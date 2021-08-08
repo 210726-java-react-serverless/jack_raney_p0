@@ -8,6 +8,16 @@ import com.revature.registrar.repository.UserRepository;
 public class UserService {
     private final UserRepository userRepo;
 
+    private User currUser;
+
+    public User getCurrUser() {
+        return currUser;
+    }
+
+    public void setCurrUser(User currUser) {
+        this.currUser = currUser;
+    }
+
     public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -26,7 +36,9 @@ public class UserService {
 
     //Return the AppUser associated with a given username and password
     public User login(String username, String password) {
-        return userRepo.findUserByCredentials(username, password);
+        User user = userRepo.findUserByCredentials(username, password);
+        setCurrUser(user);
+        return user;
     }
 
     private boolean isValid(User user) {
