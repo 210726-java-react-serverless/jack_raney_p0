@@ -1,6 +1,7 @@
 package com.revature.registrar.models;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.revature.registrar.exceptions.CapacityReachedException;
 import com.revature.registrar.exceptions.InvalidUserTypesException;
 
@@ -9,24 +10,35 @@ import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.bson.Document;
+
+import javax.print.Doc;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClassModel {
-    private final int id;
-    private final String name;
+    private int id;
+    private String name; //id based on name
     private int capacity;
+    private String description;
     private Calendar openWindow;
     private Calendar closeWindow;
+
     private Set<Student> students;
     private Set<Faculty> faculty; //Could have multiple faculty members per class
 
-    public ClassModel(String name, int capacity, Calendar open, Calendar close, Set<Faculty> faculty) {
+    public ClassModel(String name, String description, int capacity, Calendar open, Calendar close, Set<Faculty> faculty) {
         this.name = name;
+        this.description = description;
         this.id = name.hashCode();
         this.capacity = capacity;
         this.openWindow = open;
         this.closeWindow = close;
         this.students = new HashSet<>();
         this.faculty = faculty;
+    }
+
+    public ClassModel() {
+        super();
     }
 
     public int getCapacity() {
@@ -49,6 +61,34 @@ public class ClassModel {
         return students;
     }
 
+    public Set<Document> getStudentsAsDoc() {
+        Set<Document> docs = new HashSet<>();
+        for(Student stu : students) {
+            Document doc = stu.getAsDoc();
+        }
+        return docs;
+    }
+
+    public Set<Document> getFacultyAsDoc() {
+        Set<Document> docs = new HashSet<>();
+        for(Faculty fac : faculty) {
+            Document doc = fac.getAsDoc();
+            docs.add(doc);
+        }
+        return docs;
+    }
+
+    public Document getAsDoc() {
+        Document doc = new Document("name", getName())
+                .append("id", getId())
+                .append("description", getDescription())
+                .append("capacity", getCapacity())
+                .append("openWindow", getOpenWindow())
+                .append("closeWindow", getCloseWindow());
+        return doc;
+    }
+
+
     public Set<Faculty> getFaculty() {
         return faculty;
     }
@@ -67,6 +107,14 @@ public class ClassModel {
 
     public void setCloseWindow(Calendar closeWindow) {
         this.closeWindow = closeWindow;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void addUser(User user) {

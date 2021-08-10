@@ -1,6 +1,8 @@
 package com.revature.registrar.models;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.bson.Document;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
@@ -73,6 +75,17 @@ public class User {
 
     public void setFaculty(boolean faculty) {
         isFaculty = faculty;
+    }
+
+    public Document getAsDoc() {
+        Document doc = new Document("firstName", getFirstName())
+                .append("lastName",getLastName())
+                .append("email", getEmail())
+                .append("username", getUsername())
+                .append("password", getPassword())
+                .append("isFaculty", isFaculty())
+                .append("id", getId());
+        return doc;
     }
 
     @Override

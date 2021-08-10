@@ -3,6 +3,7 @@ package com.revature.registrar.models;
 import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.bson.Document;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Student extends User{
@@ -19,6 +20,14 @@ public class Student extends User{
 
     public Set<ClassModel> getClasses() {
         return classes;
+    }
+
+    public Set<Document> getClassesAsDoc() {
+        Set<Document> docs = new HashSet<>();
+        for(ClassModel classModel : classes) {
+            Document doc = classModel.getAsDoc();
+        }
+        return docs;
     }
 
     public void addClass(ClassModel c) {

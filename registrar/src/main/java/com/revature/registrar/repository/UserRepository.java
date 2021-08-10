@@ -52,7 +52,7 @@ public class UserRepository implements CrudRepository<User> {
                 .append("username", stu.getUsername())
                 .append("password", stu.getPassword())
                 .append("id", stu.getId())
-                .append("classes", stu.getClasses())
+                .append("classes", stu.getClassesAsDoc())
                 .append("isFaculty", false);
 
         return newUserDoc;
@@ -65,7 +65,7 @@ public class UserRepository implements CrudRepository<User> {
                 .append("username", fac.getUsername())
                 .append("password", fac.getPassword())
                 .append("id", fac.getId())
-                .append("classes", fac.getClasses())
+                .append("classes", fac.getClassesAsDoc())
                 .append("isFaculty", true);
 
         return newUserDoc;

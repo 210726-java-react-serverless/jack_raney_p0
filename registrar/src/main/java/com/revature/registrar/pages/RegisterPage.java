@@ -26,7 +26,7 @@ public class RegisterPage extends Page {
         BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
 
 
-        System.out.println("Register as:\n1) Student\n2) Faculty");
+        System.out.println("Register as:\n1) Student\n2) Faculty\n3) Return Home");
         String response = consoleReader.readLine();
         boolean isFaculty;
         if(response.equals("1")) {
@@ -35,6 +35,9 @@ public class RegisterPage extends Page {
         } else if (response.equals("2")) {
             isFaculty = true;
             System.out.println("Registering as Faculty");
+        } else if (response.equals("3")) {
+            router.switchPage("/home");
+            return;
         } else {
             System.out.println("Invalid Input");
             return;

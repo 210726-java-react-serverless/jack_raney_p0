@@ -37,8 +37,22 @@ public class DashPage extends Page {
         /*
         1) See/Modify/Delete Current Classes
         2) Create New Class
-        4) Logout
+        3) Logout
          */
+        System.out.println("1) Manage Classes\n2) Create New Class\n3) Logout");
+        String response = consoleReader.readLine();
+        if(response.equals("1")) {
+            router.switchPage("/myclasses");
+        } else if (response.equals("2")) {
+            router.switchPage("/register-class");
+        } else if(response.equals("3")) {
+            userService.setCurrUser(null);
+            router.switchPage("/home");
+            System.out.println("Logging out");
+        } else {
+            System.out.println("Invalid Input");
+            return;
+        }
     }
 
     private void renderStudent(Student stu) throws Exception {
@@ -54,7 +68,7 @@ public class DashPage extends Page {
         if(response.equals("1")) {
             router.switchPage("/myclasses");
         } else if (response.equals("2")) {
-            System.out.println("Not yet implemented");
+            router.switchPage("/discover");
         } else if(response.equals("3")) {
             userService.setCurrUser(null);
             router.switchPage("/home");

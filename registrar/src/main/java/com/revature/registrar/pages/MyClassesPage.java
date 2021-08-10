@@ -38,10 +38,6 @@ public class MyClassesPage extends Page {
 
     private void renderFaculty(Faculty fac) throws Exception {
         //List fac.classes
-        Set<Faculty> facSet = new HashSet<>();
-        facSet.add(fac);
-        ClassModel classModel = new ClassModel("Intro to Programming", 20, null, null, facSet);
-        fac.addClass(classModel);
         System.out.println("Enrolled Classes");
         for(ClassModel c : fac.getClasses()) {
             Set<String> facLastNames = c.getFaculty().stream().map(faculty -> faculty.getLastName()).collect(Collectors.toSet());
@@ -73,12 +69,6 @@ public class MyClassesPage extends Page {
 
     private void renderStudent(Student stu) throws Exception {
         //List stu.classes
-        Faculty test = new Faculty("Test", "Testerson", "test@email.com", "testy", "pass");
-        Set<Faculty> fac = new HashSet<>();
-        fac.add(test);
-        ClassModel classModel = new ClassModel("Intro to Programming", 20, null, null, fac);
-        classModel.addStudent(stu);
-        stu.addClass(classModel);
         System.out.println("Enrolled Classes");
         for(ClassModel c : stu.getClasses()) {
             Set<String> facLastNames = c.getFaculty().stream().map(faculty -> faculty.getLastName()).collect(Collectors.toSet());
