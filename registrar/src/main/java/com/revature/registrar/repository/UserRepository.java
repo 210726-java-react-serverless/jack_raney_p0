@@ -58,7 +58,7 @@ public class UserRepository implements CrudRepository<User> {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace() + "\n");
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }

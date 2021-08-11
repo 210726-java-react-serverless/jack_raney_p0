@@ -19,7 +19,7 @@ public class HomePage extends Page {
      */
     @Override
     public void render() throws Exception {
-        System.out.println("--------------------");
+
         System.out.println("Welcome to the Class Registrar");
         System.out.print(
                 "1) Login\n" +

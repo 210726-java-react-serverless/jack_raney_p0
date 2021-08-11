@@ -218,7 +218,6 @@ public class MyClassesPage extends Page {
             System.out.println("Invalid ID");
             return;
         }
-        System.out.println(classModel);
         Student curr = (Student)userService.getCurrUser();
 
         try{

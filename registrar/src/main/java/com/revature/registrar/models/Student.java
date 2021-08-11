@@ -32,7 +32,6 @@ public class Student extends User{
             Document doc = classModel.getAsDoc();
             docs.add(doc);
         }
-        System.out.println(docs);
         return docs;
     }
 

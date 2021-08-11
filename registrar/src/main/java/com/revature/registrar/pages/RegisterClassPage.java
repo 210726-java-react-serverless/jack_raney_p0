@@ -86,7 +86,7 @@ public class RegisterClassPage extends Page {
             //logger.info("New user created!\n" + newUser.toString());
         } catch(Exception e) {
             //logger.error("Invalid credentials");
-            e.printStackTrace();
+            logger.error(e.getStackTrace() + "\n");
             System.out.println("Invalid credentials");
         }
     }
