@@ -6,12 +6,15 @@ import com.revature.registrar.models.User;
 import com.revature.registrar.services.UserService;
 import com.revature.registrar.util.AppState;
 import com.revature.registrar.util.PageRouter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 
 public class DashPage extends Page {
     private UserService userService;
     private AppState state;
+    private final Logger logger = LogManager.getLogger(DashPage.class);
 
     public DashPage(BufferedReader consoleReader, PageRouter router, UserService userService, AppState state) {
         super("/dash", consoleReader, router);

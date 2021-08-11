@@ -9,6 +9,8 @@ import com.revature.registrar.services.UserService;
 import com.revature.registrar.util.AppState;
 import com.revature.registrar.util.CalendarBuilder;
 import com.revature.registrar.util.PageRouter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ public class MyClassesPage extends Page {
     private UserService userService;
     private ClassService classService;
     private AppState state;
+    private final Logger logger = LogManager.getLogger(MyClassesPage.class);
 
     public MyClassesPage(BufferedReader consoleReader, PageRouter router, UserService userService, ClassService classService, AppState state) {
         super("/myclasses", consoleReader, router);
@@ -165,6 +168,13 @@ public class MyClassesPage extends Page {
      * @throws Exception
      */
     private void renderStudent(Student stu) throws Exception {
+
+        stu = (Student)userService.refresh(stu);
+        if(stu.getClasses().size() == 0) {
+            System.out.println("***No Classes Enrolled***");
+            router.switchPage("/dash");
+            return;
+        }
         //List stu.classes
         System.out.println("Enrolled Classes");
         for(ClassModel c : stu.getClasses()) {

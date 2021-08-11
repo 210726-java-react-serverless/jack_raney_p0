@@ -10,6 +10,8 @@ import com.revature.registrar.util.AppState;
 import com.revature.registrar.util.CalendarBuilder;
 import com.revature.registrar.util.PageRouter;
 import jdk.nashorn.internal.runtime.Context;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +29,7 @@ public class RegisterClassPage extends Page {
     private ClassService classService;
     private UserService userService;
     private AppState state;
+    private final Logger logger = LogManager.getLogger(RegisterClassPage.class);
 
     public RegisterClassPage(BufferedReader consoleReader, PageRouter router, ClassService classService, UserService userService, AppState state) {
         super("/register-class", consoleReader, router);

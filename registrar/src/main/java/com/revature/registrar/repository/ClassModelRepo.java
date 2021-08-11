@@ -11,7 +11,10 @@ import com.revature.registrar.exceptions.DataSourceException;
 import com.revature.registrar.models.ClassModel;
 import com.revature.registrar.models.Faculty;
 import com.revature.registrar.models.Student;
+import com.revature.registrar.pages.RegisterPage;
 import com.revature.registrar.util.MongoClientFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -22,6 +25,7 @@ import java.util.*;
  * Provides methods to communicate and interact with the MongoDB classes collection
  */
 public class ClassModelRepo implements CrudRepository<ClassModel>{
+    private final Logger logger = LogManager.getLogger(ClassModelRepo.class);
 
     /**
      * Searches the Database and returns a ClassModel with a matching ID
@@ -63,7 +67,7 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
             }
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getStackTrace() + "\n");
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
@@ -95,7 +99,7 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
             return newResource;
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getStackTrace() + "\n");
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
@@ -143,7 +147,7 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
             }
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getStackTrace() + "\n");
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
@@ -174,7 +178,7 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
             return true;
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getStackTrace());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
@@ -197,7 +201,7 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
             return true;
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getStackTrace() + "\n");
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
 

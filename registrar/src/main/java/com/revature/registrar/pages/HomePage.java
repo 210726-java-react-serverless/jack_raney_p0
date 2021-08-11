@@ -1,10 +1,13 @@
 package com.revature.registrar.pages;
 
 import com.revature.registrar.util.PageRouter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 
 public class HomePage extends Page {
+    private final Logger logger = LogManager.getLogger(HomePage.class);
     public HomePage(BufferedReader consoleReader, PageRouter router) {
         super("/home", consoleReader, router);
     }

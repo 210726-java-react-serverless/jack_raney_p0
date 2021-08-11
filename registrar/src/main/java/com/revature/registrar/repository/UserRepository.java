@@ -9,7 +9,10 @@ import com.revature.registrar.exceptions.DataSourceException;
 import com.revature.registrar.models.Faculty;
 import com.revature.registrar.models.Student;
 import com.revature.registrar.models.User;
+import com.revature.registrar.pages.RegisterPage;
 import com.revature.registrar.util.MongoClientFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -21,6 +24,7 @@ import java.util.List;
  * Provides methods to communicate and interact with the MongoDB users collection
  */
 public class UserRepository implements CrudRepository<User> {
+    private final Logger logger = LogManager.getLogger(UserRepository.class);
 
     /**
      * Searches the Database and returns a User with a matching ID
@@ -44,15 +48,17 @@ public class UserRepository implements CrudRepository<User> {
             ObjectMapper mapper = new ObjectMapper();
             if ((boolean)authUserDoc.get("isFaculty")) {
                 Faculty fac = mapper.readValue(authUserDoc.toJson(), Faculty.class);
-                fac.setFaculty(true); //TODO: No idea why this isn't done by the mapper
+                fac.setFaculty(true);
+                logger.info("Retieved(F) " + fac + "\n");
                 return fac;
             } else {
                 Student stu = mapper.readValue(authUserDoc.toJson(), Student.class);
+                logger.info("Retieved(S) " + stu + "\n");
                 return stu;
             }
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            e.printStackTrace();
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
@@ -81,11 +87,12 @@ public class UserRepository implements CrudRepository<User> {
 
             usersCollection.insertOne(newUserDoc);
             //newResource.setId(newUserDoc.get("_id").toString());
+            logger.info("Created " + newResource + "\n");
 
             return newResource;
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getStackTrace() + "\n");
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
@@ -181,12 +188,13 @@ public class UserRepository implements CrudRepository<User> {
 
             Document query = new Document().append("id",  updatedResource.getId());
             usersCollection.updateOne(query, updates);
+            logger.info("Updated " + updatedResource + "\n");
             //newResource.setId(newUserDoc.get("_id").toString());
 
             return true;
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getStackTrace() + "\n");
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
 
@@ -216,17 +224,18 @@ public class UserRepository implements CrudRepository<User> {
             for (Document d : docs) {
                 if ((boolean)d.get("isFaculty")) {
                     Faculty fac = mapper.readValue(d.toJson(), Faculty.class);
-                    fac.setFaculty(true); //TODO: No idea why this isn't done by the mapper
+                    fac.setFaculty(true);
                     userDocs.add(fac);
                 } else {
                     Student stu = mapper.readValue(d.toJson(), Student.class);
                     userDocs.add(stu);
                 }
             }
+            logger.info("Retieved " + userDocs + "\n");
             return userDocs;
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getStackTrace() + "\n");
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
@@ -265,15 +274,17 @@ public class UserRepository implements CrudRepository<User> {
             ObjectMapper mapper = new ObjectMapper();
             if ((boolean)authUserDoc.get("isFaculty")) {
                 Faculty fac = mapper.readValue(authUserDoc.toJson(), Faculty.class);
-                fac.setFaculty(true); //TODO: No idea why this isn't done by the mapper
+                fac.setFaculty(true);
+                logger.info("Retieved(F) " + fac + "\n");
                 return fac;
             } else {
                 Student stu = mapper.readValue(authUserDoc.toJson(), Student.class);
+                logger.info("Retieved(S) " + stu + "\n");
                 return stu;
             }
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getStackTrace() + "\n");
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }

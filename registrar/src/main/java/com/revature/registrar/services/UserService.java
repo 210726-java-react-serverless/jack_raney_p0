@@ -6,7 +6,10 @@ import com.revature.registrar.models.ClassModel;
 import com.revature.registrar.models.Faculty;
 import com.revature.registrar.models.Student;
 import com.revature.registrar.models.User;
+import com.revature.registrar.pages.RegisterPage;
 import com.revature.registrar.repository.UserRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Calendar;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.List;
  */
 public class UserService {
     private final UserRepository userRepo;
+    private final Logger logger = LogManager.getLogger(UserService.class);
 
     private User currUser;
 
@@ -46,6 +50,10 @@ public class UserService {
      * @return
      */
     public boolean update(User user) {
+        if(!isValid(user)) {
+            logger.error("Invalid user data provided\n");
+            throw new InvalidRequestException("Invalid user data provided");
+        }
         return userRepo.update(user);
     }
 
@@ -58,6 +66,7 @@ public class UserService {
     public User getUserWithId(int id) {
         User result = userRepo.findById(id);
         if(result == null) {
+            logger.error("Invalid ID\n");
             throw new InvalidRequestException("Invalid ID");
         } else {
             return userRepo.findById(id);
@@ -106,6 +115,7 @@ public class UserService {
     //Validate user input, store in UserRepo and return AppUser with repo_id
     public User register(User user) throws RuntimeException{
         if(!isValid(user)) {
+            logger.error("Invalid user data provided\n");
             throw new InvalidRequestException("Invalid user data provided");
         }
 
@@ -136,12 +146,14 @@ public class UserService {
     public ClassModel unenrollClass(ClassModel classModel) {
         User user = getCurrUser();
         if(user.isFaculty()) {
+            logger.error("Faculty cannot unenroll from a class\n");
             throw new InvalidRequestException("Faculty cannot unenroll from a class");
         }
 
         Student curr = (Student) user;
 
         if(!curr.isInClasses(classModel)) {
+            logger.error("Cannot unenroll from a class that they are not enrolled in\n");
             throw new InvalidRequestException("Cannot unenroll from a class that they are not enrolled in");
         }
 
@@ -154,6 +166,7 @@ public class UserService {
             update(user);
             return classModel;
         } else {
+            logger.error("Cannot unenroll from a class outside of the Registration Window\n");
             throw new InvalidRequestException("Cannot unenroll from a class outside of the Registration Window");
         }
     }
@@ -178,6 +191,7 @@ public class UserService {
 
         //if a duplicate already exists in the db, reject
         if(userRepo.findById(user.getId()) != null) {
+            logger.error("Duplicate");
             throw new ResourcePersistenceException("Duplicate");
         }
 

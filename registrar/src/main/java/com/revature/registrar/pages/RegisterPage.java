@@ -7,6 +7,8 @@ import com.revature.registrar.models.User;
 import com.revature.registrar.services.UserService;
 import com.revature.registrar.util.AppState;
 import com.revature.registrar.util.PageRouter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -14,6 +16,7 @@ import java.io.InputStreamReader;
 public class RegisterPage extends Page {
     private UserService userService;
     private AppState state;
+    private final Logger logger = LogManager.getLogger(RegisterPage.class);
 
     public RegisterPage(BufferedReader consoleReader, PageRouter router, UserService userService, AppState state) {
         super("/register", consoleReader, router);

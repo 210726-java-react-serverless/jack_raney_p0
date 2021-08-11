@@ -4,8 +4,11 @@ import com.revature.registrar.exceptions.InvalidRequestException;
 import com.revature.registrar.exceptions.ResourcePersistenceException;
 import com.revature.registrar.models.ClassModel;
 import com.revature.registrar.models.User;
+import com.revature.registrar.pages.RegisterPage;
 import com.revature.registrar.repository.ClassModelRepo;
 import com.revature.registrar.repository.UserRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -17,6 +20,7 @@ import java.util.List;
  */
 public class ClassService {
     private final ClassModelRepo classRepo;
+    private final Logger logger = LogManager.getLogger(ClassService.class);
 
     public ClassService(ClassModelRepo classRepo) {
         this.classRepo = classRepo;
@@ -30,6 +34,7 @@ public class ClassService {
     public ClassModel getClassWithId(int id) {
         ClassModel result = classRepo.findById(id);
         if(result == null) {
+            logger.error("Invalid ID\n");
             throw new InvalidRequestException("Invalid ID");
         } else {
             return classRepo.findById(id);
@@ -68,6 +73,10 @@ public class ClassService {
      * @return
      */
     public boolean update(ClassModel classModel) {
+        if (!isValid(classModel)) {
+            logger.error("Invalid classModel data provided\n");
+            throw new InvalidRequestException("Invalid classModel data provided");
+        }
         return classRepo.update(classModel);
     }
 
@@ -79,7 +88,8 @@ public class ClassService {
      */
     public ClassModel register(ClassModel classModel) throws RuntimeException{
         if(!isValid(classModel)) {
-            throw new InvalidRequestException("Invalid user data provided");
+            logger.error("Invalid classModel data provided\n");
+            throw new InvalidRequestException("Invalid classModel data provided");
         }
         //pass validated user to UserRepository
         classRepo.save(classModel);
@@ -119,6 +129,7 @@ public class ClassService {
 
         //if a duplicate already exists in the db, reject
         if(classRepo.findById(classModel.getId()) != null) {
+            logger.error("Duplicate");
             throw new ResourcePersistenceException("Duplicate");
         }
 

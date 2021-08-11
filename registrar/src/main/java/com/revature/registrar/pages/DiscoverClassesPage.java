@@ -6,6 +6,8 @@ import com.revature.registrar.services.ClassService;
 import com.revature.registrar.services.UserService;
 import com.revature.registrar.util.AppState;
 import com.revature.registrar.util.PageRouter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ public class DiscoverClassesPage extends Page {
     private ClassService classService;
     private UserService userService;
     private AppState state;
+    private final Logger logger = LogManager.getLogger(DiscoverClassesPage.class);
 
     public DiscoverClassesPage(BufferedReader consoleReader, PageRouter router, ClassService classService, UserService userService, AppState state) {
         super("/discover", consoleReader, router);
