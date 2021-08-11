@@ -6,12 +6,14 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Updates;
 import com.revature.registrar.exceptions.DataSourceException;
 import com.revature.registrar.models.ClassModel;
 import com.revature.registrar.models.Faculty;
 import com.revature.registrar.models.Student;
 import com.revature.registrar.util.MongoClientFactory;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import javax.print.Doc;
 import java.util.*;
@@ -23,7 +25,7 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
             MongoDatabase bookstoreDb = mongoClient.getDatabase("project0");
-            MongoCollection<Document> usersCollection = bookstoreDb.getCollection("users");
+            MongoCollection<Document> usersCollection = bookstoreDb.getCollection("classes");
             Document queryDoc = new Document("id", id);
 
             Document authClassDoc = usersCollection.find(queryDoc).first();
@@ -42,13 +44,14 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
                         .build();
                 authClassDoc.remove("openWindow");
                 authClassDoc.remove("closeWindow");
-                authClassDoc.append("openWindow", openDate);
-                authClassDoc.append("closeWindow", closeDate);
+                //authClassDoc.append("openWindow", openDate);
+                //authClassDoc.append("closeWindow", closeDate);
+                ObjectMapper mapper = new ObjectMapper();
+                ClassModel auth = mapper.readValue(authClassDoc.toJson(), ClassModel.class);
+                auth.setOpenWindow(openDate);
+                auth.setCloseWindow(closeDate);
+                return auth;
             }
-
-            ObjectMapper mapper = new ObjectMapper();
-            ClassModel auth = mapper.readValue(authClassDoc.toJson(), ClassModel.class);
-            return auth;
 
         } catch (Exception e) {
             e.printStackTrace(); // TODO log this to a file
@@ -58,8 +61,6 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
 
     @Override
     public ClassModel save(ClassModel newResource) {
-        System.out.println(newResource.getFaculty());
-        System.out.println(newResource.getFacultyAsDoc());
         Document newUserDoc = new Document("name", newResource.getName())
                 .append("capacity", newResource.getCapacity())
                 .append("description", newResource.getDescription())
@@ -113,6 +114,8 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
 
                 ObjectMapper mapper = new ObjectMapper();
                 ClassModel classModel = mapper.readValue(doc.toJson(), ClassModel.class);
+                classModel.setOpenWindow(openDate);
+                classModel.setCloseWindow(closeDate);
                 result.add(classModel);
             }
 
@@ -130,11 +133,47 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
 
     @Override
     public boolean update(ClassModel updatedResource) {
-        return false;
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase bookstoreDb = mongoClient.getDatabase("project0");
+            MongoCollection<Document> usersCollection = bookstoreDb.getCollection("classes");
+
+            Bson updates = Updates.combine(
+                    Updates.set("capacity", updatedResource.getCapacity()),
+                    Updates.set("description", updatedResource.getDescription()),
+                    Updates.set("openWindow", updatedResource.getOpenWindow().getTimeInMillis()),
+                    Updates.set("closeWindow", updatedResource.getCloseWindow().getTimeInMillis()),
+                    Updates.set("students", updatedResource.getStudentsAsDoc()),
+                    Updates.set("faculty", updatedResource.getFacultyAsDoc()));
+
+            Document query = new Document().append("id",  updatedResource.getId());
+            usersCollection.updateOne(query, updates);
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO log this to a file
+            throw new DataSourceException("An unexpected exception occurred.", e);
+        }
     }
 
+
+    //WHAT IF IT IS NOT IN THE DB???
     @Override
     public boolean deleteById(int id) {
-        return false;
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase bookstoreDb = mongoClient.getDatabase("project0");
+            MongoCollection<Document> usersCollection = bookstoreDb.getCollection("classes");
+            Document queryDoc = new Document("id", id);
+            usersCollection.deleteOne(queryDoc);
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO log this to a file
+            throw new DataSourceException("An unexpected exception occurred.", e);
+        }
+
     }
 }

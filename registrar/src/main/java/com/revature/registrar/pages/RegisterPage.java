@@ -21,19 +21,25 @@ public class RegisterPage extends Page {
         this.state = state;
     }
 
+    /**
+     * Renders the Register Page where users can choose to register a Faculty or Student account.
+     * Users will pass in a username and password and an account will be created if entries are valid.
+     * @throws Exception
+     */
     @Override
     public void render() throws Exception {
         BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
-
-
-        System.out.println("Register as:\n1) Student\n2) Faculty\n3) Return Home");
+        System.out.println("--------------------");
+        System.out.print("Register as:\n1) Student\n2) Faculty\n3) Return Home\n> ");
         String response = consoleReader.readLine();
         boolean isFaculty;
         if(response.equals("1")) {
             isFaculty = false;
+            System.out.println("--------------------");
             System.out.println("Registering as Student");
         } else if (response.equals("2")) {
             isFaculty = true;
+            System.out.println("--------------------");
             System.out.println("Registering as Faculty");
         } else if (response.equals("3")) {
             router.switchPage("/home");
@@ -43,19 +49,19 @@ public class RegisterPage extends Page {
             return;
         }
 
-        System.out.println("Enter First Name: \n" + ">\n");
+        System.out.print("Enter First Name: \n" + "> ");
         String firstName = consoleReader.readLine();
 
-        System.out.println("Enter Last Name: \n" + ">\n");
+        System.out.print("Enter Last Name: \n" + "> ");
         String lastName = consoleReader.readLine();
 
-        System.out.println("Enter Email: \n" + ">\n");
+        System.out.print("Enter Email: \n" + "> ");
         String email = consoleReader.readLine();
 
-        System.out.println("Enter Username: \n" + ">\n");
+        System.out.print("Enter Username: \n" + "> ");
         String username = consoleReader.readLine();
 
-        System.out.println("Enter Password: \n" + ">\n");
+        System.out.print("Enter Password: \n" + "> ");
         String password = consoleReader.readLine();
 
 

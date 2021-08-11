@@ -65,6 +65,7 @@ public class ClassModel {
         Set<Document> docs = new HashSet<>();
         for(Student stu : students) {
             Document doc = stu.getAsDoc();
+            docs.add(doc);
         }
         return docs;
     }
@@ -83,8 +84,8 @@ public class ClassModel {
                 .append("id", getId())
                 .append("description", getDescription())
                 .append("capacity", getCapacity())
-                .append("openWindow", getOpenWindow())
-                .append("closeWindow", getCloseWindow());
+                .append("openWindow", getOpenWindow().getTimeInMillis())
+                .append("closeWindow", getCloseWindow().getTimeInMillis());
         return doc;
     }
 
@@ -154,11 +155,21 @@ public class ClassModel {
     }
 
     public void removeFac(Faculty fac) {
-        faculty.remove(fac);
+        for(Faculty f : faculty) {
+            if(f.getId() == fac.getId()) {
+                students.remove(f);
+                return;
+            }
+        };
     }
 
     public void removeStudent(Student stu) {
-        students.remove(stu);
+        for(Student s : students) {
+            if(s.getId() == stu.getId()) {
+                students.remove(s);
+                return;
+            }
+        }
     }
 
     public void switchUser(User existing, User swap) {
@@ -167,4 +178,19 @@ public class ClassModel {
             throw new InvalidUserTypesException("Cannot swap users of different types (both must be Student or Faculty)");
         }
     }
+
+    @Override
+    public String toString() {
+        return "ClassModel{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", capacity=" + capacity +
+                ", description='" + description + '\'' +
+                ", openWindow=" + openWindow +
+                ", closeWindow=" + closeWindow +
+                ", students=" + students +
+                ", faculty=" + faculty +
+                '}';
+    }
+
 }

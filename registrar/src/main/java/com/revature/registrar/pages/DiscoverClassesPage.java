@@ -37,31 +37,63 @@ public class DiscoverClassesPage extends Page {
             return;
         }
 
+        int count = 0;
         for(ClassModel c : classes) {
             Student currUser = (Student) userService.getCurrUser();
-            if(currUser.getClasses().contains(c)) {
-                System.out.println("User already enrolled in " + c.getName());
+            if(!currUser.isInClasses(c)) {
+                Set<String> facLastNames = c.getFaculty().stream().map(faculty -> faculty.getLastName()).collect(Collectors.toSet());
+                String unsigned = Integer.toUnsignedString(c.getId()); //Conversion for readability (no negatives)
+                System.out.println(unsigned + " | " + c.getName() + " | " + facLastNames + " | " + "(" + c.getStudents().size() + "/" + c.getCapacity() + ")");
+                count++;
             }
-            Set<String> facLastNames = c.getFaculty().stream().map(faculty -> faculty.getLastName()).collect(Collectors.toSet());
-            String unsigned = Integer.toUnsignedString(c.getId()); //Conversion fo readability (no negatives)
-            System.out.println(unsigned + " | " + c.getName() + " | " + facLastNames + " | " + "(" + c.getStudents().size() + "/" + c.getCapacity() + ")");
+        }
+        if(count == 0) {
+            System.out.println("No Open Classes");
         }
 
         System.out.println("1) Enroll\n2) Return to Dashboard\n3) Logout");
         String response = consoleReader.readLine();
         if(response.equals("1")) {
-            //TODO: Implement Enrollment
-            System.out.println("Not Implemented");
-
+            enroll();
         } else if (response.equals("2")) {
             router.switchPage("/dash");
         } else if(response.equals("3")) {
             userService.setCurrUser(null);
             router.switchPage("/home");
-            System.out.println("Logging out");
+            System.out.println("Logging Out");
         } else {
             System.out.println("Invalid Input");
             return;
         }
+    }
+
+    private void enroll() throws Exception {
+        System.out.println("Enter Course Id To Enroll In: ");
+        String unsigned = consoleReader.readLine();
+        int id = Integer.parseUnsignedInt(unsigned);
+        System.out.println(id);
+
+        ClassModel classModel = null;
+        try {
+            classModel = classService.getClassWithId(id);
+        } catch (Exception e) {
+            System.out.println("Invalid Class ID");
+            router.switchPage("/discover");
+            return;
+        }
+        System.out.println(classModel);
+
+        Student curr = (Student)userService.getCurrUser();
+        if(curr.isInClasses(classModel)) {
+            System.out.println("ALREADY ENROLLED");
+            return;
+        }
+
+        classModel.addStudent((Student)userService.getCurrUser());
+        ((Student) userService.getCurrUser()).addClass(classModel);
+
+        //Need to persist these changes to the db with UPDATE
+        classService.update(classModel);
+        userService.update(userService.getCurrUser());
     }
 }

@@ -19,8 +19,30 @@ public class ClassService {
         this.classRepo = classRepo;
     }
 
+    public ClassModel getClassWithId(int id) {
+        ClassModel result = classRepo.findById(id);
+        if(result == null) {
+            throw new InvalidRequestException("Invalid ID");
+        } else {
+            return classRepo.findById(id);
+        }
+    }
+
+    //Refresh classModel with complete information
+    public ClassModel refresh(ClassModel classModel) {
+        return classRepo.findById(classModel.getId());
+    }
+
     public List<ClassModel> getOpenClasses() {
         return classRepo.findOpenClasses();
+    }
+
+    public boolean delete(ClassModel classModel) {
+        return classRepo.deleteById(classModel.getId());
+    }
+
+    public boolean update(ClassModel classModel) {
+        return classRepo.update(classModel);
     }
 
     //Validate user input, store in ClassRepo and return ClassModel
@@ -36,30 +58,22 @@ public class ClassService {
         return classModel;
     }
 
-
-
     private boolean isValid(ClassModel classModel) {
-        System.out.println("In isValid");
         if(classModel == null) {
             return false;
         }
 
         Calendar current = Calendar.getInstance();
-        System.out.println(current);
-        System.out.println(classModel.getOpenWindow());
         if(classModel.getName() == null || classModel.getName().trim().equals("")) return false;
         if(classModel.getDescription() == null || classModel.getDescription().trim().equals("")) return false;
         if(classModel.getCapacity() <= 0) return false;
+        if(classModel.getCapacity() < classModel.getStudents().size()) return false;
 
         //Open/Close Windows cannot be before the current time
         if(classModel.getOpenWindow() == null || classModel.getOpenWindow().getTimeInMillis() <= current.getTimeInMillis() ) return false;
-        System.out.println("OPEN WINDOW GOOD");
         if(classModel.getCloseWindow() == null || classModel.getCloseWindow().getTimeInMillis() <= current.getTimeInMillis() ) return false;
-        System.out.println("CLOSE WINDOW GOOD");
         //Open has to be before the close
         if(classModel.getCloseWindow().getTimeInMillis() <= classModel.getOpenWindow().getTimeInMillis() ) return false;
-
-        System.out.println("MADE IT HERE");
 
         if(classModel.getStudents() == null) return false;
         if(classModel.getFaculty() == null) return false;

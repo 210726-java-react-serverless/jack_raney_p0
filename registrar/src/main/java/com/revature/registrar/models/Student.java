@@ -26,15 +26,31 @@ public class Student extends User{
         Set<Document> docs = new HashSet<>();
         for(ClassModel classModel : classes) {
             Document doc = classModel.getAsDoc();
+            docs.add(doc);
         }
+        System.out.println(docs);
         return docs;
+    }
+
+    public boolean isInClasses(ClassModel classModel) {
+        for(ClassModel c : classes) {
+            if(c.getId() == classModel.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addClass(ClassModel c) {
         classes.add(c);
     }
 
-    public void removeClass(int id) {
-        classes.remove(id);
+    public void removeClass(ClassModel classModel) {
+        for(ClassModel c : classes) {
+            if(c.getId() == classModel.getId()) {
+                classes.remove(c);
+                return;
+            }
+        }
     }
 }

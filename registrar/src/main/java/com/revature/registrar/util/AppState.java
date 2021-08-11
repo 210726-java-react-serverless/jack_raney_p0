@@ -35,7 +35,7 @@ public class AppState {
         router.addPage(new RegisterPage(consoleReader, router, userService, this));
         router.addPage(new LoginPage(consoleReader, router, userService, this));
         router.addPage(new DashPage(consoleReader, router, userService, this));
-        router.addPage(new MyClassesPage(consoleReader, router, userService, this));
+        router.addPage(new MyClassesPage(consoleReader, router, userService, classService, this));
         router.addPage(new RegisterClassPage(consoleReader, router, classService, userService, this));
         router.addPage(new DiscoverClassesPage(consoleReader, router, classService, userService, this));
     }

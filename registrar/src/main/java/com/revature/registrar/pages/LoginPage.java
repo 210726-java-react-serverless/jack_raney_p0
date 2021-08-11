@@ -18,12 +18,17 @@ public class LoginPage extends Page {
 
     }
 
+    /**
+     * Renders the Login Page where users enter their credentials for authorization
+     * @throws Exception
+     */
     @Override
     public void render() throws Exception {
-        System.out.println("Enter Username: \n" + ">");
+        System.out.println("--------------------");
+        System.out.print("Enter Username: \n" + "> ");
         String username = consoleReader.readLine();
 
-        System.out.println("Enter Password: \n" + ">");
+        System.out.print("Enter Password: \n" + "> ");
         String password = consoleReader.readLine();
 
         User user = userService.login(username, password);
