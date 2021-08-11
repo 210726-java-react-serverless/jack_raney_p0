@@ -90,7 +90,14 @@ public class DiscoverClassesPage extends Page {
     private void enroll() throws Exception {
         System.out.println("Enter Course Id To Enroll In: ");
         String unsigned = consoleReader.readLine();
-        int id = Integer.parseUnsignedInt(unsigned);
+        int id = 0;
+        try {
+            id = Integer.parseUnsignedInt(unsigned);
+        } catch (NumberFormatException nfe) {
+            System.out.println("Invalid Input");
+            return;
+        }
+
 
         ClassModel classModel = null;
         try {
