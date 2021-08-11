@@ -96,6 +96,7 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
             MongoCollection<Document> usersCollection = bookstoreDb.getCollection("classes");
 
             usersCollection.insertOne(newUserDoc);
+            logger.info("Created " + newResource + "\n");
             return newResource;
 
         } catch (Exception e) {
