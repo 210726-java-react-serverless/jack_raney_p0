@@ -50,9 +50,13 @@ public class UserService {
      * @return
      */
     public boolean update(User user) {
-        if(!isValid(user)) {
-            logger.error("Invalid user data provided\n");
-            throw new InvalidRequestException("Invalid user data provided");
+        try{
+            if(!isValid(user)) {
+                logger.error("Invalid user data provided\n");
+                throw new InvalidRequestException("Invalid user data provided");
+            }
+        } catch (ResourcePersistenceException rpe) {
+            logger.info("Updating existing resource");
         }
         return userRepo.update(user);
     }
@@ -69,7 +73,7 @@ public class UserService {
             logger.error("Invalid ID\n");
             throw new InvalidRequestException("Invalid ID");
         } else {
-            return userRepo.findById(id);
+            return result;
         }
     }
 
@@ -179,7 +183,7 @@ public class UserService {
      * @param user
      * @return
      */
-    private boolean isValid(User user) {
+    public boolean isValid(User user) {
         if(user == null) {
             return false;
         }

@@ -1,5 +1,6 @@
 package com.revature.registrar.pages;
 
+import com.revature.registrar.exceptions.CapacityReachedException;
 import com.revature.registrar.models.ClassModel;
 import com.revature.registrar.models.Student;
 import com.revature.registrar.services.ClassService;
@@ -35,12 +36,13 @@ public class DiscoverClassesPage extends Page {
      */
     @Override
     public void render() throws Exception {
+        System.out.println("--------------------");
         System.out.println("Welcome to the Discovery Page");
         System.out.println("Listing Open Courses:");
         List<ClassModel> classes = new ArrayList<>();
         classes = classService.getOpenClasses();
         if(classes == null) {
-            System.out.println("No Open Courses");
+            System.out.println("***No Open Courses***");
             router.switchPage("/dash");
             return;
         }
@@ -62,7 +64,12 @@ public class DiscoverClassesPage extends Page {
         System.out.println("1) Enroll\n2) Return to Dashboard\n3) Logout");
         String response = consoleReader.readLine();
         if(response.equals("1")) {
-            enroll();
+            try {
+                enroll();
+            } catch(CapacityReachedException cre) {
+                System.out.println("Capacity Reached");
+                logger.error("Capacity Reached\n");
+            }
         } else if (response.equals("2")) {
             router.switchPage("/dash");
         } else if(response.equals("3")) {
@@ -84,7 +91,6 @@ public class DiscoverClassesPage extends Page {
         System.out.println("Enter Course Id To Enroll In: ");
         String unsigned = consoleReader.readLine();
         int id = Integer.parseUnsignedInt(unsigned);
-        System.out.println(id);
 
         ClassModel classModel = null;
         try {
@@ -94,7 +100,6 @@ public class DiscoverClassesPage extends Page {
             router.switchPage("/discover");
             return;
         }
-        System.out.println(classModel);
 
         Student curr = (Student)userService.getCurrUser();
         if(curr.isInClasses(classModel)) {

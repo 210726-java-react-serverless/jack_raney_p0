@@ -1,6 +1,7 @@
 package com.revature.registrar.services;
 
 import com.revature.registrar.exceptions.InvalidRequestException;
+import com.revature.registrar.exceptions.OpenWindowException;
 import com.revature.registrar.exceptions.ResourcePersistenceException;
 import com.revature.registrar.models.ClassModel;
 import com.revature.registrar.models.User;
@@ -73,9 +74,15 @@ public class ClassService {
      * @return
      */
     public boolean update(ClassModel classModel) {
-        if (!isValid(classModel)) {
-            logger.error("Invalid classModel data provided\n");
-            throw new InvalidRequestException("Invalid classModel data provided");
+        try {
+            if (!isValid(classModel)) {
+                logger.error("Invalid classModel data provided\n");
+                throw new InvalidRequestException("Invalid classModel data provided");
+            }
+        } catch (ResourcePersistenceException rpe) {
+            logger.info("Updating existing resource");
+        } catch (OpenWindowException owe) {
+            logger.info("Updating existing resource");
         }
         return classRepo.update(classModel);
     }
@@ -96,6 +103,7 @@ public class ClassService {
         return classModel;
     }
 
+
     /**
      * Returns true if a classModel instance is "valid".
      * - Must contain no empty string values
@@ -106,7 +114,7 @@ public class ClassService {
      * @param classModel
      * @return
      */
-    private boolean isValid(ClassModel classModel) {
+    public boolean isValid(ClassModel classModel) {
         if(classModel == null) {
             return false;
         }
@@ -116,10 +124,8 @@ public class ClassService {
         if(classModel.getDescription() == null || classModel.getDescription().trim().equals("")) return false;
         if(classModel.getCapacity() <= 0) return false;
         if(classModel.getCapacity() < classModel.getStudents().size()) return false;
-
         //Open/Close Windows cannot be before the current time
         if(classModel.getOpenWindow() == null) return false;
-        if(classModel.getOpenWindow().getTimeInMillis() <= current.getTimeInMillis()) return false;
         if(classModel.getCloseWindow() == null || classModel.getCloseWindow().getTimeInMillis() <= current.getTimeInMillis() ) return false;
         //Open has to be before the close
         if(classModel.getCloseWindow().getTimeInMillis() <= classModel.getOpenWindow().getTimeInMillis() ) return false;
@@ -132,6 +138,7 @@ public class ClassService {
             logger.error("Duplicate");
             throw new ResourcePersistenceException("Duplicate");
         }
+        if(classModel.getOpenWindow().getTimeInMillis() <= current.getTimeInMillis()) throw new OpenWindowException("Window is open");
 
         return true;
     }
