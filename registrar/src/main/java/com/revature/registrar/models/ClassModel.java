@@ -14,6 +14,10 @@ import org.bson.Document;
 
 import javax.print.Doc;
 
+/**
+ * POJO
+ * Basic ClassModel class with all user info and getters/setters
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClassModel {
     private int id;

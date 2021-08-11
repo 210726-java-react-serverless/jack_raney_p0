@@ -3,6 +3,9 @@ package com.revature.registrar.util;
 import java.io.BufferedReader;
 import java.util.Calendar;
 
+/**
+ * Helper class that takes User input and returns an appropriate Calendar object
+ */
 public class CalendarBuilder {
 
     private BufferedReader consoleReader;
@@ -11,8 +14,13 @@ public class CalendarBuilder {
         this.consoleReader = consoleReader;
     }
 
+    /**
+     * Helper class which takes in user input and creates a Calendar Object
+     * @return
+     * @throws Exception
+     */
     public Calendar build() throws Exception {
-        System.out.println("Date (MM/DD/YYYY): \n" + ">\n");
+        System.out.print("Date (MM/DD/YYYY):\n> ");
         String response = consoleReader.readLine();
 
         String[] vals = response.split("/");
@@ -31,7 +39,7 @@ public class CalendarBuilder {
         if(day <= 0 || day > 31) return null;
         if(year < 2021) return null;
 
-        System.out.println("Time (HH:MM):");
+        System.out.print("Time (HH:MM):\n> ");
 
         response = consoleReader.readLine();
 
@@ -46,7 +54,7 @@ public class CalendarBuilder {
         }
 
         if(hour <= 0 || hour >= 24) return null;
-        if(minute <= 0 || minute >= 60) return null;
+        if(minute < 0 || minute >= 60) return null;
 
 
         Calendar date = new Calendar.Builder()

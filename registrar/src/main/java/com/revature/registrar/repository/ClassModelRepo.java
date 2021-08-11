@@ -18,7 +18,16 @@ import org.bson.conversions.Bson;
 import javax.print.Doc;
 import java.util.*;
 
+/**
+ * Provides methods to communicate and interact with the MongoDB classes collection
+ */
 public class ClassModelRepo implements CrudRepository<ClassModel>{
+
+    /**
+     * Searches the Database and returns a ClassModel with a matching ID
+     * @param id
+     * @return
+     */
     @Override
     public ClassModel findById(int id) {
         try {
@@ -59,6 +68,11 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
         }
     }
 
+    /**
+     * Stores a ClassModel, newResource, in the database
+     * @param newResource
+     * @return
+     */
     @Override
     public ClassModel save(ClassModel newResource) {
         Document newUserDoc = new Document("name", newResource.getName())
@@ -70,7 +84,6 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
                 .append("students", newResource.getStudentsAsDoc())
                 .append("faculty", newResource.getFacultyAsDoc());
 
-        System.out.println(newUserDoc);
 
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
@@ -79,7 +92,6 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
             MongoCollection<Document> usersCollection = bookstoreDb.getCollection("classes");
 
             usersCollection.insertOne(newUserDoc);
-            System.out.println(newUserDoc);
             return newResource;
 
         } catch (Exception e) {
@@ -88,6 +100,11 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
         }
     }
 
+    /**
+     * Searches the database and returns a list of ClassModels where the current time falls between
+     * the openDate and closeDate
+     * @return
+     */
     public List<ClassModel> findOpenClasses() {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
@@ -131,6 +148,11 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
         }
     }
 
+    /**
+     * Updates the fields of a database element with new data
+     * @param updatedResource
+     * @return
+     */
     @Override
     public boolean update(ClassModel updatedResource) {
         try {
@@ -158,7 +180,11 @@ public class ClassModelRepo implements CrudRepository<ClassModel>{
     }
 
 
-    //WHAT IF IT IS NOT IN THE DB???
+    /**
+     * Deletes the classModel with the corresponding id from the database
+     * @param id
+     * @return
+     */
     @Override
     public boolean deleteById(int id) {
         try {

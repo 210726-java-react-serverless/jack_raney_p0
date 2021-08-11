@@ -13,6 +13,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Singleton Factory which creates and manages the connection to our MongoDB
+ */
 public class MongoClientFactory {
 
     private final MongoClient mongoClient;

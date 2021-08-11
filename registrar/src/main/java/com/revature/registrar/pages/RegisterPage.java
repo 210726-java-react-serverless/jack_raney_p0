@@ -79,6 +79,7 @@ public class RegisterPage extends Page {
             //logger.info("New user created!\n" + newUser.toString());
         } catch(Exception e) {
             //logger.error("Invalid credentials");
+            System.out.println("Invalid Credentials");
             router.switchPage("/register");
         }
     }

@@ -34,9 +34,8 @@ public class LoginPage extends Page {
         User user = userService.login(username, password);
         if(user == null) {
             System.out.println("Login Failed");
-            router.switchPage("/login");
+            router.switchPage("/home");
         } else {
-            System.out.println(user);
             router.switchPage("/dash");
         }
     }

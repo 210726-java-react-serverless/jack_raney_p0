@@ -8,17 +8,30 @@ import com.revature.registrar.models.Student;
 import com.revature.registrar.models.User;
 import com.revature.registrar.repository.UserRepository;
 
+import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Middle man between Page and Database logic. Handles general business logic and wrapper functions
+ * to expose the UserRepository
+ */
 public class UserService {
     private final UserRepository userRepo;
 
     private User currUser;
 
+    /**
+     * Retrieves the current logged in User
+     * @return
+     */
     public User getCurrUser() {
         return currUser;
     }
 
+    /**
+     * Sets the current logged in User
+     * @param currUser
+     */
     public void setCurrUser(User currUser) {
         this.currUser = currUser;
     }
@@ -27,11 +40,21 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
+    /**
+     * Wrapper for userRepo.update
+     * @param user
+     * @return
+     */
     public boolean update(User user) {
         return userRepo.update(user);
     }
 
 
+    /**
+     * Retieves the user with the given id
+     * @param id
+     * @return
+     */
     public User getUserWithId(int id) {
         User result = userRepo.findById(id);
         if(result == null) {
@@ -41,6 +64,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Deletes a classModel from the classes field of all Users
+     * @param classModel
+     * @return
+     * @throws RuntimeException
+     */
     public boolean deleteClassFromAll(ClassModel classModel) throws RuntimeException {
         List<User> users = userRepo.findWithClass(classModel.getId());
         for(User user : users) {
@@ -57,11 +86,23 @@ public class UserService {
         return true;
     }
 
+    /**
+     * Refreshes the data of a User instance with fresh data from the database
+     * @param user
+     * @return
+     */
     //Refresh classModel with complete information
     public User refresh(User user) {
         return userRepo.findById(user.getId());
     }
 
+    /**
+     * Validates user input, and stores in the UserRepo if valid
+     * Returns stored User
+     * @param user
+     * @return
+     * @throws RuntimeException
+     */
     //Validate user input, store in UserRepo and return AppUser with repo_id
     public User register(User user) throws RuntimeException{
         if(!isValid(user)) {
@@ -74,13 +115,57 @@ public class UserService {
         return user;
     }
 
-    //Return the AppUser associated with a given username and password
+    /**
+     * Returns the User associated with a given username and password
+     * @param username
+     * @param password
+     * @return
+     */
     public User login(String username, String password) {
         User user = userRepo.findUserByCredentials(username, password);
         setCurrUser(user);
         return user;
     }
 
+    /**
+     * Unenrolls a user from a class and returns the altered classModel
+     * classService.update(classModel) should be run afterwards to ensure the classdb is updated
+     * @param classModel
+     * @return
+     */
+    public ClassModel unenrollClass(ClassModel classModel) {
+        User user = getCurrUser();
+        if(user.isFaculty()) {
+            throw new InvalidRequestException("Faculty cannot unenroll from a class");
+        }
+
+        Student curr = (Student) user;
+
+        if(!curr.isInClasses(classModel)) {
+            throw new InvalidRequestException("Cannot unenroll from a class that they are not enrolled in");
+        }
+
+        Calendar current = Calendar.getInstance();
+        boolean openOkay = classModel.getOpenWindow().getTimeInMillis() < current.getTimeInMillis();
+        boolean closeOkay = classModel.getCloseWindow().getTimeInMillis() > current.getTimeInMillis();
+        if(openOkay && closeOkay) {
+            classModel.removeStudent(curr);
+            curr.removeClass(classModel);
+            update(user);
+            return classModel;
+        } else {
+            throw new InvalidRequestException("Cannot unenroll from a class outside of the Registration Window");
+        }
+    }
+
+
+    /**
+     * Returns true if a user instance is "valid".
+     * - Must contain no empty string values
+     * - An element with this id must not exist in the db
+     * @param user
+     * @return
+     */
     private boolean isValid(User user) {
         if(user == null) {
             return false;

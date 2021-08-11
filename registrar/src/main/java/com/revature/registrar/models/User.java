@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bson.Document;
 
+/**
+ * POJO
+ * Basic User class with all user info and getters/setters
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     private int id;
@@ -17,6 +21,7 @@ public class User {
     public User() {
         super();
     }
+
 
     public User(String firstName, String lastName, String email, String username, String password, boolean isFaculty) {
         this.firstName = firstName;

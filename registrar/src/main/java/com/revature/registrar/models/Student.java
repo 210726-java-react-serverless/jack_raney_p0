@@ -5,6 +5,10 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.bson.Document;
 
+/**
+ * Extension of the User class
+ * Adds the classes field and provides Student specific helper methods
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Student extends User{
     //Use set because we cannot have duplicate id's

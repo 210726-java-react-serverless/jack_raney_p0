@@ -19,8 +19,14 @@ public class DashPage extends Page {
         this.state = state;
     }
 
+    /**
+     * Renders a Dashboard Screen which presents different options depending on whether
+     * the user is a Student or a Faculty member
+     * @throws Exception
+     */
     @Override
     public void render() throws Exception {
+        System.out.println("--------------------");
         User currUser = userService.getCurrUser();
         System.out.println("Welcome " + currUser.getFirstName());
         if (currUser.isFaculty()) {
@@ -32,14 +38,15 @@ public class DashPage extends Page {
         }
     }
 
+    /**
+     * Renders the Faculty Dashboard Screen which presents options to Manage Classes, Create New Class,
+     * or Logout
+     * @param fac
+     * @throws Exception
+     */
     private void renderFaculty(Faculty fac) throws Exception {
         System.out.println("You're at the Faculty dashboard");
-        /*
-        1) See/Modify/Delete Current Classes
-        2) Create New Class
-        3) Logout
-         */
-        System.out.println("1) Manage Classes\n2) Create New Class\n3) Logout");
+        System.out.print("1) Manage Classes\n2) Create New Class\n3) Logout\n>");
         String response = consoleReader.readLine();
         if(response.equals("1")) {
             router.switchPage("/myclasses");
@@ -55,15 +62,16 @@ public class DashPage extends Page {
         }
     }
 
+    /**
+     * Renders the Student Dashboard Screen which presents options to Manage Classes, Discover Classes,
+     * or Logout
+     * @param stu
+     * @throws Exception
+     */
     private void renderStudent(Student stu) throws Exception {
-        System.out.println("You're at the Student dashboard");
-        /*
-        1) See/Unenroll Current Classes
-        2) Enroll in New Class
-        3) Logout
-         */
 
-        System.out.println("1) Manage Classes\n2) Discover Classes\n3) Logout");
+        System.out.println("You're at the Student dashboard");
+        System.out.print("1) Manage Classes\n2) Discover Classes\n3) Logout\n> ");
         String response = consoleReader.readLine();
         if(response.equals("1")) {
             router.switchPage("/myclasses");

@@ -35,10 +35,17 @@ public class RegisterClassPage extends Page {
         this.state = state;
     }
 
+    /**
+     * Renders the Register Class Screen which is only accessible by Faculty members
+     * Allows Faculty to create a new class.
+     * The new class will be added to the db if all entries are valid.
+     * @throws Exception
+     */
     @Override
     public void render() throws Exception {
         BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
 
+        System.out.println("--------------------");
         System.out.println("Register a new class here!:\n1) Continue\n2) Return to Dashboard");
         String response = consoleReader.readLine();
         if(response.equals("2")) {

@@ -27,10 +27,15 @@ public class MyClassesPage extends Page {
         this.state = state;
     }
 
+    /**
+     * Renders the My Classes Screen which displays created classes for Faculty members,
+     * and displays enrolled classes for Students
+     * @throws Exception
+     */
     @Override
     public void render() throws Exception {
         User currUser = userService.getCurrUser();
-        System.out.println("Welcome " + currUser.getFirstName());
+        System.out.println("--------------------");
         if (currUser.isFaculty()) {
             Faculty fac = (Faculty) currUser;
             renderFaculty(fac);
@@ -40,11 +45,18 @@ public class MyClassesPage extends Page {
         }
     }
 
+    /**
+     * Displays the screen for Faculty only
+     * Allows users to manage their classes by deleting or updating them
+     * @param fac
+     * @throws Exception
+     */
     private void renderFaculty(Faculty fac) throws Exception {
         //List fac.classes
+        fac = (Faculty)userService.refresh(fac);
         System.out.println("Registered Classes");
         if(fac.getClasses().size() == 0) {
-            System.out.println("No Classes Registered");
+            System.out.println("***No Classes Registered***");
             router.switchPage("/dash");
             return;
         }
@@ -55,10 +67,9 @@ public class MyClassesPage extends Page {
             System.out.println(unsigned + " | " + c.getName() + " | " + facLastNames + " | " + "(" + c.getStudents().size() + "/" + c.getCapacity() + ")");
         }
 
-        System.out.println("1) Update Class \n2) Delete Class\n3) Dashboard\n4) Logout");
+        System.out.print("1) Update Class \n2) Delete Class\n3) Dashboard\n4) Logout\n> ");
         String response = consoleReader.readLine();
         if(response.equals("1")) {
-            //TODO: Update class
             updateClass();
         } else if(response.equals("2")) {
             deleteClass();
@@ -74,7 +85,13 @@ public class MyClassesPage extends Page {
         }
     }
 
+    /**
+     * Exposes the menu to delete a class
+     * Takes in user input and deletes a class from the db
+     * @throws Exception
+     */
     private void deleteClass() throws Exception{
+        System.out.println("--------------------");
         System.out.println("Enter Course Id To Delete: ");
         String unsigned = consoleReader.readLine();
         int id = Integer.parseUnsignedInt(unsigned);
@@ -93,25 +110,33 @@ public class MyClassesPage extends Page {
 
     }
 
+    /**
+     * Exposes the menu to update the fields of a class
+     * Takes in user input and updates a class
+     * @throws Exception
+     */
     private void updateClass() throws Exception {
+        System.out.println("--------------------");
         System.out.println("Enter Course Id To Update: ");
         String unsigned = consoleReader.readLine();
-        int id = Integer.parseUnsignedInt(unsigned);
+        int id = 0;
         ClassModel classModel = null;
-
         try {
+            id = Integer.parseUnsignedInt(unsigned);
             classModel = classService.getClassWithId(id);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Invalid ID");
+            return;
         }
 
-        System.out.println("1) Update Description\n" +
+        System.out.println("--------------------");
+        System.out.print("1) Update Description\n" +
                 "2) Update Open Window\n3) Update Close Window\n4) Update Capacity\n" +
-                "5) Return To My Classes");
+                "5) Return To My Classes\n> ");
         String response = consoleReader.readLine();
 
         if(response.equals("1")) {
-            System.out.println("Enter New Description");
+            System.out.print("Enter New Description\n> ");
             response = consoleReader.readLine();
             classModel.setDescription(response);
         } else if(response.equals("2")) {
@@ -121,7 +146,7 @@ public class MyClassesPage extends Page {
             CalendarBuilder cb = new CalendarBuilder(consoleReader);
             classModel.setCloseWindow(cb.build());
         } else if(response.equals("4")) {
-            System.out.println("Enter New Capacity: \n" + ">\n");
+            System.out.print("Enter New Capacity: \n> ");
             int capacity = Integer.parseInt(consoleReader.readLine());
             classModel.setCapacity(capacity);
         } else if(response.equals("5")) {
@@ -133,6 +158,12 @@ public class MyClassesPage extends Page {
         classService.update(classModel);
     }
 
+    /**
+     * Displays the screen for Students only
+     * Allows users to manage their classes by deleting or updating them
+     * @param stu
+     * @throws Exception
+     */
     private void renderStudent(Student stu) throws Exception {
         //List stu.classes
         System.out.println("Enrolled Classes");
@@ -144,7 +175,7 @@ public class MyClassesPage extends Page {
             System.out.println(unsigned + " | " + c.getName() + " | " + facLastNames + " | " + "(" + c.getStudents().size() + "/" + c.getCapacity() + ")");
         }
 
-        System.out.println("1) Unenroll \n2) Return to Dashboard\n3) Logout");
+        System.out.print("1) Unenroll \n2) Return to Dashboard\n3) Logout\n> ");
         String response = consoleReader.readLine();
         if(response.equals("1")) {
             unenroll();
@@ -160,30 +191,32 @@ public class MyClassesPage extends Page {
         }
     }
 
-    //TODO: Check if within window
+    /**
+     * Renders UI which allows the user to choose a course to unenroll from.
+     * If entries are valid, removes the course from the User's classes.
+     * @throws Exception
+     */
     private void unenroll() throws Exception {
+        System.out.println("--------------------");
         System.out.println("Enter Course Id To Unenroll From: ");
         String unsigned = consoleReader.readLine();
-        int id = Integer.parseUnsignedInt(unsigned);
         ClassModel classModel = null;
-
         try {
+            int id = Integer.parseUnsignedInt(unsigned);
             classModel = classService.getClassWithId(id);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Invalid ID");
+            return;
         }
         System.out.println(classModel);
         Student curr = (Student)userService.getCurrUser();
-        if(curr.isInClasses(classModel)) {
-            classModel.removeStudent(curr);
-            curr.removeClass(classModel);
 
-            //persist changes
+        try{
+            classModel = userService.unenrollClass(classModel);
             classService.update(classModel);
-            userService.update(curr);
             return;
-        } else {
-            System.out.println("Invalid Course");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }

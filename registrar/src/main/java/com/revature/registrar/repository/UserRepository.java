@@ -17,7 +17,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Provides methods to communicate and interact with the MongoDB users collection
+ */
 public class UserRepository implements CrudRepository<User> {
+
+    /**
+     * Searches the Database and returns a User with a matching ID
+     * @param id
+     * @return
+     */
     @Override
     public User findById(int id) {
         try {
@@ -48,6 +57,11 @@ public class UserRepository implements CrudRepository<User> {
         }
     }
 
+    /**
+     * Stores a User, newResource, in the database
+     * @param newResource
+     * @return
+     */
     @Override
     public User save(User newResource) {
         Document newUserDoc;
@@ -76,6 +90,11 @@ public class UserRepository implements CrudRepository<User> {
         }
     }
 
+    /**
+     * Private helper method which returns a Document representing a given Student
+     * @param stu
+     * @return
+     */
     private Document getStudentDoc(Student stu) {
         Document newUserDoc = new Document("firstName", stu.getFirstName())
                 .append("lastName", stu.getLastName())
@@ -89,6 +108,11 @@ public class UserRepository implements CrudRepository<User> {
         return newUserDoc;
     }
 
+    /**
+     * Private helper method which returns a Document representing a given Faculty
+     * @param fac
+     * @return
+     */
     private Document getFacultyDoc(Faculty fac) {
         Document newUserDoc = new Document("firstName", fac.getFirstName())
                 .append("lastName", fac.getLastName())
@@ -102,6 +126,11 @@ public class UserRepository implements CrudRepository<User> {
         return newUserDoc;
     }
 
+    /**
+     * Private helper method which returns Bson representing a given Faculty
+     * @param fac
+     * @return
+     */
     private Bson getFacultyUpdates(Faculty fac) {
         Bson updates = Updates.combine(
                 Updates.set("firstName", fac.getFirstName()),
@@ -112,6 +141,11 @@ public class UserRepository implements CrudRepository<User> {
         return updates;
     }
 
+    /**
+     * Private helper method which returns a Document representing a given Student
+     * @param stu
+     * @return
+     */
     private Bson getStudentUpdates(Student stu) {
         Bson updates = Updates.combine(
                 Updates.set("firstName", stu.getFirstName()),
@@ -122,6 +156,11 @@ public class UserRepository implements CrudRepository<User> {
         return updates;
     }
 
+    /**
+     * Updates the fields of a database element with new data
+     * @param updatedResource
+     * @return
+     */
     @Override
     public boolean update(User updatedResource) {
         Bson updates;
@@ -153,6 +192,11 @@ public class UserRepository implements CrudRepository<User> {
 
     }
 
+    /**
+     * Returns a list of Users who have the classModel with a given id in their classes
+     * @param id
+     * @return
+     */
     public List<User> findWithClass(int id) {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
@@ -163,7 +207,6 @@ public class UserRepository implements CrudRepository<User> {
             Document queryDoc = new Document("classes.id", id);
             List<Document> docs = new ArrayList<>();
             docs = usersCollection.find(queryDoc).into(docs);
-            System.out.println(docs);
             if (docs.size() == 0) {
                 return null;
             }
@@ -188,11 +231,22 @@ public class UserRepository implements CrudRepository<User> {
         }
     }
 
+    /**
+     * Not implemented, unnecessary
+     * @param id
+     * @return
+     */
     @Override
     public boolean deleteById(int id) {
         return false;
     }
 
+    /**
+     * Retrieves the User with a given username and password from the database
+     * @param username
+     * @param password
+     * @return
+     */
     public User findUserByCredentials(String username, String password) {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();

@@ -4,6 +4,9 @@ import com.revature.registrar.util.PageRouter;
 
 import java.io.BufferedReader;
 
+/**
+ * Abstract class which is the blueprint for all Pages in our application
+ */
 public abstract class Page {
     //protected String name;
     protected String route;

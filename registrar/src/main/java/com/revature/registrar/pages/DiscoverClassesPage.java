@@ -25,6 +25,11 @@ public class DiscoverClassesPage extends Page {
         this.state = state;
     }
 
+    /**
+     * Renders the Discover Screen which displays courses which are open for enrollment,
+     * accessible by Students only
+     * @throws Exception
+     */
     @Override
     public void render() throws Exception {
         System.out.println("Welcome to the Discovery Page");
@@ -67,6 +72,11 @@ public class DiscoverClassesPage extends Page {
         }
     }
 
+    /**
+     * Allows the User to select a class to enroll in.
+     * Validates and updates the db accordingly
+     * @throws Exception
+     */
     private void enroll() throws Exception {
         System.out.println("Enter Course Id To Enroll In: ");
         String unsigned = consoleReader.readLine();

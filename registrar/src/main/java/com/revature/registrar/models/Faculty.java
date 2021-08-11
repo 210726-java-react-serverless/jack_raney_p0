@@ -5,6 +5,10 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.bson.Document;
 
+/**
+ * Extension of the User class
+ * Adds the classes field and provides Faculty specific helper methods
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Faculty extends User{
     Set<ClassModel> classes = new HashSet<>(); //contains ids of taught classes OR should it store actual objects?

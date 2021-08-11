@@ -12,6 +12,10 @@ import sun.reflect.generics.repository.ClassRepository;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+/**
+ * Controls general app flow. Creates pages, and creates necessary structures including the router, repositories,
+ * and services
+ */
 public class AppState {
     private boolean alive;
     private User currUser;
@@ -29,6 +33,12 @@ public class AppState {
         init(consoleReader, userService, classService);
     }
 
+    /**
+     * Creates ever page for the application
+     * @param consoleReader
+     * @param userService
+     * @param classService
+     */
     private void init(BufferedReader consoleReader, UserService userService, ClassService classService) {
 
         router.addPage(new HomePage(consoleReader, router));
@@ -40,6 +50,10 @@ public class AppState {
         router.addPage(new DiscoverClassesPage(consoleReader, router, classService, userService, this));
     }
 
+    /**
+     * Called by App to start the main flow loop. Runs throughout the lifecycle of the app to control page
+     * display.
+     */
     public void startup() {
         router.switchPage("/home");
 
